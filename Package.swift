@@ -16,13 +16,13 @@ let package = Package(
         .target(
             name: "Pouch",
             dependencies: [
+                .target(name: "PouchFramework"),
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Yams", package: "Yams")
             ]),
         .target(
             name: "PouchFramework",
             dependencies: [
-                .target(name: "Pouch"),
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Yams", package: "Yams")
             ]),
