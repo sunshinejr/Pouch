@@ -7,7 +7,7 @@ extension String {
         return prefix(1).uppercased() + dropFirst().lowercased()
     }
     
-    func toSnakeCase() -> String {
+    func toCamelCase() -> String {
         let parts = components(separatedBy: CharacterSet.alphanumerics.inverted)
         
         guard let firstPart = parts.first?.lowercased() else { return self }
