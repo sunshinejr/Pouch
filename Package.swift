@@ -24,7 +24,6 @@ let package = Package(
             name: "PouchFramework",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                .product(name: "Yams", package: "Yams")
             ]),
         .testTarget(name: "PouchTests", dependencies: ["PouchFramework"]),
     ]
