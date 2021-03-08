@@ -44,7 +44,7 @@ enum \(config.typeName) {
     
     private func cipherGenerator(for secret: Secret) -> some SwiftCipherContentsGenerating {
         switch secret.encryption {
-        case .xor, .caesar:
+        case .xor:
             return SwiftXorGenerator()
         }
     }
