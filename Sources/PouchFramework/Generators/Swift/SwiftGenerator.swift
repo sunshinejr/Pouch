@@ -20,7 +20,7 @@ struct SwiftGenerator: SwiftFileContentsGenerating {
             let cipher = cipherGenerator(for: secret)
             let value = cipher.variableValue(for: secret, config: config)
             let variable = SecretVariable(
-                name: secret.name.toCamelCase(),
+                name: secret.generatedName ?? secret.name.toCamelCase(),
                 type: "String",
                 value: value
             )

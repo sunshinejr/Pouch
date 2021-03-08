@@ -22,7 +22,7 @@ public struct SecretDeclaration: Codable {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             let name = try container.decode(String.self, forKey: .name)
             let generatedName = try container.decodeIfPresent(String.self, forKey: .generatedName)
-            let encryption = try container.decode(Cipher.self, forKey: .encryption)
+            let encryption = (try container.decodeIfPresent(Cipher.self, forKey: .encryption)) ?? .xor
             self.init(name: name, generatedName: generatedName, encryption: encryption)
         }
     }
@@ -42,6 +42,6 @@ public struct SecretDeclaration: Codable {
 
 extension SecretDeclaration {
     func with(value: String) -> Secret {
-        return .init(name: name, value: value, encryption: encryption)
+        return .init(name: name, generatedName: generatedName, value: value, encryption: encryption)
     }
 }
