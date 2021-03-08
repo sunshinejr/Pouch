@@ -10,9 +10,9 @@ public struct Engine {
                 for output in configuration.outputs {
                     do {
                         let contents = try generateFileContents(secrets: secrets, output: output)
-                        try write(fileContents: contents, to: output.decryptionFile)
+                        try write(fileContents: contents, to: output.file)
                     } catch {
-                        print("Couldn't generate file to \(output.decryptionFile.fileName).")
+                        print("Couldn't generate file to \(output.file.filePath).")
                         print("Error: \(error)")
                     }
                 }
@@ -38,7 +38,7 @@ public struct Engine {
     }
     
     private func write(fileContents contents: String, to file: DecryptionFile) throws {
-        let url = URL(fileURLWithPath: file.fileName)
+        let url = URL(fileURLWithPath: file.filePath)
         try contents.write(to: url, atomically: true, encoding: .utf8)
     }
 }

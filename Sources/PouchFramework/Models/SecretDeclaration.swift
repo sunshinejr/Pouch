@@ -1,10 +1,42 @@
-public struct SecretDeclaration {
+public struct SecretDeclaration: Codable {
     public let name: String
+    public let generatedName: String?
     public let encryption: Cipher
     
-    public init(name: String, encryption: Cipher) {
+    enum CodingKeys: String, CodingKey {
+        case name
+        case generatedName
+        case encryption
+    }
+    
+    public init(name: String, generatedName: String? = nil, encryption: Cipher) {
         self.name = name
+        self.generatedName = generatedName
         self.encryption = encryption
+    }
+    
+    public init(from decoder: Decoder) throws {
+        if let container = try? decoder.singleValueContainer(), let name = try? container.decode(String.self) {
+            self.init(name: name, encryption: .xor)
+        } else {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let name = try container.decode(String.self, forKey: .name)
+            let generatedName = try container.decodeIfPresent(String.self, forKey: .generatedName)
+            let encryption = try container.decode(Cipher.self, forKey: .encryption)
+            self.init(name: name, generatedName: generatedName, encryption: encryption)
+        }
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        if encryption == .xor {
+            var container = encoder.singleValueContainer()
+            try container.encode(name)
+        } else {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(name, forKey: .name)
+            try container.encodeIfPresent(generatedName, forKey: .generatedName)
+            try container.encode(encryption, forKey: .encryption)
+        }
     }
 }
 

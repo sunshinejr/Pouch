@@ -1,7 +1,7 @@
-public struct DecryptionFile {
-    public let fileName: String
+public struct DecryptionFile: Codable {
+    public let filePath: String
     
-    public init(fileName: String) {
-        self.fileName = fileName
+    public init(filePath: String) {
+        self.filePath = filePath
     }
 }
