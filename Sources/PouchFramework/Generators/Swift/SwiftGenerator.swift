@@ -27,7 +27,7 @@ struct SwiftGenerator: FileContentsGenerating {
 import Foundation
 
 enum \(config.typeName) {
-    \(mappedVariables.map { $0.toFullDeclaration() }.joined(separator: "\n"))
+\(mappedVariables.map { "   " + $0.toFullDeclaration() }.joined(separator: "\n"))
 
     private static func _xored(_ secret: [UInt8], salt: [UInt8]) -> String {
         return String(bytes: secret.enumerated().map { index, character in
