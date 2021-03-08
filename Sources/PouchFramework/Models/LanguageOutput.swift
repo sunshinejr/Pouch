@@ -15,9 +15,11 @@ public enum OutputLanguage: Codable {
         let language = try container.decode(String.self, forKey: .language)
         
         switch language {
-        default:
+        case "swift":
             let config = try SwiftConfig(from: decoder)
             self = .swift(config)
+        default:
+            print("Language \"\(language)\" not supported, falling back to \"swift\"")
         }
     }
     

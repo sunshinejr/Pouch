@@ -17,18 +17,18 @@ public struct SecretDeclaration: Codable {
     
     public init(from decoder: Decoder) throws {
         if let container = try? decoder.singleValueContainer(), let name = try? container.decode(String.self) {
-            self.init(name: name, encryption: .xor)
+            self.init(name: name, encryption: Defaults.encryption)
         } else {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             let name = try container.decode(String.self, forKey: .name)
             let generatedName = try container.decodeIfPresent(String.self, forKey: .generatedName)
-            let encryption = (try container.decodeIfPresent(Cipher.self, forKey: .encryption)) ?? .xor
+            let encryption = (try container.decodeIfPresent(Cipher.self, forKey: .encryption)) ?? Defaults.encryption
             self.init(name: name, generatedName: generatedName, encryption: encryption)
         }
     }
     
     public func encode(to encoder: Encoder) throws {
-        if encryption == .xor {
+        if encryption == Defaults.encryption {
             var container = encoder.singleValueContainer()
             try container.encode(name)
         } else {
