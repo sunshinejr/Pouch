@@ -1,5 +1,7 @@
 import ArgumentParser
+import Foundation
 import PouchFramework
+import Yams
 
 struct Pouch: ParsableCommand {
     static var configuration = CommandConfiguration(
@@ -9,13 +11,23 @@ struct Pouch: ParsableCommand {
     )
 }
 
-
 struct Retrieve: ParsableCommand {
     static var configuration = CommandConfiguration(abstract: "Retrieve secrets & generate files at given paths with given configuration.")
     
+    @Option(help: "The config file used to generate the files.")
+    var config: String = "./.pouch.yml"
+    
     func run() throws {
-        let configuration = Configuration(input: .environmentVariable, secrets: [.init(name: "API_KEY", encryption: .xor)], outputs: [.init(decryptionFile: .init(fileName: "./Secrets.swift"), outputLanguage: .swift(.init(typeName: "Secrets")))])
-        Engine().createFiles(configuration: configuration)
+        do {
+            let config = try String(contentsOf: URL(fileURLWithPath: self.config))
+            let mappedConfig: Configuration = try YAMLDecoder().decode(from: config)
+            let string = try YAMLEncoder().encode(mappedConfig)
+            Engine().createFiles(configuration: mappedConfig)
+            print("Using configuration:")
+            print(string)
+        } catch {
+            print("Error when decoding string: \(error)")
+        }
     }
 }
 
