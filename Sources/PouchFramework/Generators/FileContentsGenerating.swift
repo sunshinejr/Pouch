@@ -1,5 +1,7 @@
 protocol FileContentsGenerating {
-    associatedtype Config
+    associatedtype LanguageConfig
     
-    func generateFileContents(secrets: [Secret], config: Config) -> String
+    func generateFileContents(secrets: [Secret], config: LanguageConfig) -> String
 }
+
+protocol SwiftFileContentsGenerating: FileContentsGenerating where LanguageConfig == SwiftConfig {}

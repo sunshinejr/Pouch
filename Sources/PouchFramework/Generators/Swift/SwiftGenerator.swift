@@ -1,4 +1,4 @@
-struct SwiftGenerator: FileContentsGenerating {
+struct SwiftGenerator: SwiftFileContentsGenerating {
     private struct SecretVariable {
         let name: String
         let type: String
@@ -12,43 +12,40 @@ struct SwiftGenerator: FileContentsGenerating {
     public init() {}
     
     public func generateFileContents(secrets: [Secret], config: SwiftConfig) -> String {
-        let mappedVariables = secrets.map { secret -> SecretVariable in
-            let salt = [UInt8].random(length: 64)
-            let xoredValue = xorEncode(secret: secret.value, salt: salt)
-            return SecretVariable(
+        var imports = [String]()
+        var functions = [String]()
+        var variables = [SecretVariable]()
+        
+        for secret in secrets {
+            let cipher = cipherGenerator(for: secret)
+            let value = cipher.variableValue(for: secret, config: config)
+            let variable = SecretVariable(
                 name: secret.name.toCamelCase(),
                 type: "String",
-                value: "\(config.typeName)._xored(\(xoredValue), salt: \(salt))"
+                value: value
             )
+            
+            imports.append(contentsOf: cipher.neededImports())
+            functions.append(contentsOf: cipher.neededHelperFunctions())
+            variables.append(variable)
         }
-        
+
         return
 """
-import Foundation
+\(imports.unique().map { "import \($0)" }.joined(separator: "\n"))
 
 enum \(config.typeName) {
-\(mappedVariables.map { "   " + $0.toFullDeclaration() }.joined(separator: "\n"))
+\(variables.map { "   " + $0.toFullDeclaration() }.joined(separator: "\n"))
 
-    private static func _xored(_ secret: [UInt8], salt: [UInt8]) -> String {
-        return String(bytes: secret.enumerated().map { index, character in
-            return character ^ salt[index % salt.count]
-        }, encoding: .utf8) ?? ""
-    }
+\(functions.unique().joined(separator: "\n\n"))
 }
 """
     }
     
-    // Extract to a external XorCipher type?
-    private func xorEncode(secret: String, salt: [UInt8]) -> [UInt8] {
-        let secretBytes = [UInt8](secret.utf8)
-        return secretBytes.enumerated().map { index, character in
-            return character ^ salt[index % salt.count]
+    private func cipherGenerator(for secret: Secret) -> some SwiftCipherContentsGenerating {
+        switch secret.encryption {
+        case .xor, .caesar:
+            return SwiftXorGenerator()
         }
-    }
-
-    private func xorDecode(encoded secretBytes: [UInt8], salt: [UInt8]) -> String {
-        return String(bytes: secretBytes.enumerated().map { index, character in
-            return character ^ salt[index % salt.count]
-        }, encoding: .utf8) ?? ""
     }
 }
