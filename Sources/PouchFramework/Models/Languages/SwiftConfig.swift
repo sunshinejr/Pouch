@@ -11,7 +11,7 @@ public struct SwiftConfig: Codable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.typeName = (try? container.decode(String.self, forKey: .typeName)) ?? "Secrets"
+        self.typeName = (try? container.decode(String.self, forKey: .typeName)) ?? Defaults.Swift.typeName
     }
     
     public func encode(to encoder: Encoder) throws {
