@@ -1,1 +1,3 @@
 ## Next
+
+- Initial release 🥳
