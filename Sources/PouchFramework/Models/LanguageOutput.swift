@@ -19,7 +19,9 @@ public enum OutputLanguage: Codable {
             let config = try SwiftConfig(from: decoder)
             self = .swift(config)
         default:
-            print("Language \"\(language)\" not supported, falling back to \"swift\"")
+            logger.log(.parser, "Language \"\(language)\" not supported, falling back to \"swift\"")
+            let config = try SwiftConfig(from: decoder)
+            self = .swift(config)
         }
     }
     

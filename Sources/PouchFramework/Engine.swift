@@ -4,21 +4,23 @@ public struct Engine {
     public init() {}
     
     public func createFiles(configuration: Configuration) {
+        logger.log(.variableFetcher, "Resolving input variables...")
         resolve(declarations: configuration.secrets, input: configuration.input) { result in
             switch result {
             case let .success(secrets):
                 for output in configuration.outputs {
                     do {
-                        let contents = try generateFileContents(secrets: secrets, output: output)
+                        logger.log(.variableFetcher, "Input variables resolved successfully!")
+                        logger.log(.fileWriter, "Generating file output at \(output.file.filePath, color: .green)...")
+                        let contents = try generateFileContents(secrets: secrets, output: output, logger: logger)
                         try write(fileContents: contents, to: output.file)
+                        logger.log(.fileWriter, "Generated file output at \(output.file.filePath, color: .green) successfully!")
                     } catch {
-                        print("Couldn't generate file to \(output.file.filePath).")
-                        print("Error: \(error)")
+                        logger.log(.fileWriter, "Couldn't generate file output at \(output.file.filePath, color: .green): \(error, color: .red)")
                     }
                 }
             case let .failure(error):
-                print("Couldn't retrieve input variables.")
-                print("Error: \(error)")
+                logger.log(.variableFetcher, "Couldn't retrieve input variables: \(error, color: .red)")
             }
         }
     }
@@ -30,7 +32,7 @@ public struct Engine {
         }
     }
     
-    private func generateFileContents(secrets: [Secret], output: Output) throws -> String {
+    private func generateFileContents(secrets: [Secret], output: Output, logger: Logging) throws -> String {
         switch output.outputLanguage {
         case let .swift(swiftConfig):
             return SwiftGenerator().generateFileContents(secrets: secrets, config: swiftConfig)
