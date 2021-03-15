@@ -90,9 +90,7 @@ You can either build & install it by cloning the repo and using Make:
 make install
 ```
 
-or use Homebrew:
-```
-```
+or use Homebrew (soon).
 
 ## Contributing
 This project is at its early stage and it currently only supports `xor` with random salt & only Swift output, but I'm open to:
