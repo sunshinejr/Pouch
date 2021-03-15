@@ -12,14 +12,14 @@ public enum OutputLanguage: Codable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let language = try container.decode(String.self, forKey: .language)
+        let language = try container.decodeIfPresent(String.self, forKey: .language)
         
         switch language {
         case "swift":
             let config = try SwiftConfig(from: decoder)
             self = .swift(config)
         default:
-            logger.log(.parser, "Language \"\(language)\" not supported, falling back to \"swift\"")
+            logger.log(.parser, "Language \"\(language ?? "")\" not supported, falling back to \"swift\"")
             let config = try SwiftConfig(from: decoder)
             self = .swift(config)
         }

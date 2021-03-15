@@ -1,4 +1,4 @@
-struct SwiftGenerator: SwiftFileContentsGenerating {
+struct SwiftGenerator {
     private struct SecretVariable {
         let name: String
         let type: String
@@ -42,10 +42,11 @@ enum \(config.typeName) {
 """
     }
     
-    private func cipherGenerator(for secret: Secret) -> some SwiftCipherContentsGenerating {
+    private func cipherGenerator(for secret: Secret) -> SwiftCipherContentsGenerating {
         switch secret.encryption {
         case .xor:
             return SwiftXorGenerator()
         }
     }
 }
+
