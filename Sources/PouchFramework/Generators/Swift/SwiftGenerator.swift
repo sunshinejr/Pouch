@@ -1,4 +1,4 @@
-struct SwiftGenerator {
+public struct SwiftGenerator {
     private struct SecretVariable {
         let name: String
         let type: String

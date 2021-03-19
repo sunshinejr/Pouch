@@ -25,14 +25,14 @@ public struct Engine {
         }
     }
     
-    private func resolve(declarations: [SecretDeclaration], input: Input, completion: (Result<[Secret], Error>) -> Void) {
+    public func resolve(declarations: [SecretDeclaration], input: Input, completion: (Result<[Secret], Error>) -> Void) {
         switch input {
         case .environmentVariable:
             EnvironmentVariableFetcher().fetch(secrets: declarations, completion: completion)
         }
     }
     
-    private func generateFileContents(secrets: [Secret], output: Output, logger: Logging) throws -> String {
+    public func generateFileContents(secrets: [Secret], output: Output, logger: Logging) throws -> String {
         switch output.outputLanguage {
         case let .swift(swiftConfig):
             return SwiftGenerator().generateFileContents(secrets: secrets, config: swiftConfig)

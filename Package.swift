@@ -9,8 +9,8 @@ let package = Package(
         .library(name: "PouchFramework", targets: ["PouchFramework"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser", .exact("0.3.2")),
-        .package(url: "https://github.com/jpsim/Yams", .exact("4.0.4"))
+        .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser", .exact("0.3.2")),
+        .package(name: "Yams", url: "https://github.com/jpsim/Yams", .exact("4.0.4")),
     ],
     targets: [
         .target(
