@@ -43,7 +43,7 @@ Let's face it - managing secret keys is not an easy task. We usually want:
 
 While writing this tool there was nothing that I found that helped with all of the above.
 
-`pouch` will make sure that static analysis tools will not be able to get to the keys easily and to be even more protected, do not commit this file to the repository. 
+`pouch` will make sure that static analysis tools will not be able to get to the keys easily. Though, for your own good, do not commit this file to the repository. 
 
 
 ## Configuration options
