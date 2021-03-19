@@ -1,4 +1,4 @@
-public struct SecretDeclaration: Codable {
+public struct SecretDeclaration: Codable, Equatable {
     public let name: String
     public let generatedName: String?
     public let encryption: Cipher

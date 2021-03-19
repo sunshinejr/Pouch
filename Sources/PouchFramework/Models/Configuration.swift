@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Configuration: Codable {
+public struct Configuration: Codable, Equatable {
     public let input: Input
     public let secrets: [SecretDeclaration]
     public let outputs: [Output]

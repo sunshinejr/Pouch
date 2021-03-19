@@ -1,4 +1,4 @@
-public struct Output: Codable {
+public struct Output: Codable, Equatable {
     public let file: DecryptionFile
     public let outputLanguage: OutputLanguage
     

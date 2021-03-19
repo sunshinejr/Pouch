@@ -1,4 +1,4 @@
-public struct SwiftConfig: Codable {
+public struct SwiftConfig: Codable, Equatable {
     public let typeName: String
     
     enum CodingKeys: String, CodingKey {
@@ -10,8 +10,11 @@ public struct SwiftConfig: Codable {
     }
     
     public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.typeName = (try? container.decode(String.self, forKey: .typeName)) ?? Defaults.Swift.typeName
+        if let container = try? decoder.container(keyedBy: CodingKeys.self) {
+            self.typeName = (try? container.decode(String.self, forKey: .typeName)) ?? Defaults.Swift.typeName
+        } else {
+            self.typeName = Defaults.Swift.typeName
+        }
     }
     
     public func encode(to encoder: Encoder) throws {

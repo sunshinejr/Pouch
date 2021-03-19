@@ -1,3 +1,3 @@
-public enum Cipher: String, Codable {
+public enum Cipher: String, Codable, Equatable {
     case xor
 }

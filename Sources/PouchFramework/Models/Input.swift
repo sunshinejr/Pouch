@@ -1,4 +1,4 @@
-public enum Input: String, Codable {
+public enum Input: String, Codable, Equatable {
     case environmentVariable
     
     enum CodingKeys: String, CodingKey {
