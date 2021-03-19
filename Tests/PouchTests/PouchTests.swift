@@ -8,7 +8,7 @@ final class PouchTests: XCTestCase {
     }
 
     func test_generatesFileBasedOnConfig() throws {
-        let secretApiKey = "secret_sauce_monke_boi"
+        let secretApiKey = "secret_sauce_monke_boi🐒"
         let generatedFileUrl = URL(fileURLWithPath: "./Secrets2.swift")
         let config = """
 secrets:
