@@ -9,8 +9,7 @@ secrets:
 - API_KEY
 - API_SECRET
 outputs:
-- filePath: ./Secrets.swift
-  typeName: Secret
+- ./Secrets.swift
 ```
 
 Now, with `API_KEY` and `API_SECRET` stored in environment variables, you can generate a file with secrets using:
@@ -58,7 +57,7 @@ For the config itself, you are required to have at least one secret and one outp
 secrets:
 - API_KEY
 outputs:
-- filePath: ./Secrets.swift
+- ./Secrets.swift
 ```
 
 Though, there are also custom properties you can set.
@@ -80,6 +79,8 @@ secrets:
 - name: API_KEY
   generatedName: youtubeApiKey
 - API_SECRET
+outputs:
+- ./Secrets.swift
 ```
 
 There are also things like custom inputs, but for now we only support environment variables.
