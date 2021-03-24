@@ -2,8 +2,8 @@ import XCTest
 import PouchFramework
 
 final class PouchTests: XCTestCase {
-    func test_showHelpOnMainCall() throws {
-        let output = try Process.run(tool: .pouch, arguments: [])
+    func test_showsHelp() throws {
+        let output = try Process.run(tool: .pouch, arguments: ["-h"])
         XCTAssertTrue(output.contains("A utility tool for secret management"))
     }
 
@@ -29,7 +29,7 @@ outputs:
     }
 
     static var allTests = [
-        ("test_showHelpOnMainCall", test_showHelpOnMainCall),
+        ("test_showHelpOnMainCall", test_showsHelp),
         ("test_generatesFileBasedOnConfig", test_generatesFileBasedOnConfig)
     ]
 }
