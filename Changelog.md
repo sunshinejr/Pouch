@@ -1,5 +1,7 @@
 ## Next
 
+## 0.1.1 (2021-03-24)
+
 ## 0.1.0 (2021-03-24)
 
 - No need for `filePath` keyword in the `.pouch.yml` output if there is a single path (with multiple config options you need to type parameter names, similar to how secret parsing works).
