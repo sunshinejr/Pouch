@@ -86,12 +86,14 @@ outputs:
 There are also things like custom inputs, but for now we only support environment variables.
 
 ## Installing
-You can either build & install it by cloning the repo and using Make:
+You can either build & install it by using my Homebrew tap:
+```
+brew install sunshinejr/formulae/pouch
+```
+or by cloning the repo and using Make:
 ```
 make install
 ```
-
-or use Homebrew (soon).
 
 ## Contributing
 This project is at its early stage and it currently only supports `xor` with random salt & only Swift output, but I'm open to:
