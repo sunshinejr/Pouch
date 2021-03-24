@@ -1,6 +1,7 @@
 ## Next
 
 ## 0.1.1 (2021-03-24)
+- Small updates to Makefile for brew support
 
 ## 0.1.0 (2021-03-24)
 
