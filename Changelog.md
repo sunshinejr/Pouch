@@ -1,5 +1,9 @@
 ## Next
 
+## 0.1.2 (2021-03-24)
+
+- Resign from building fat binaries due to problems with brew & intel macs
+
 ## 0.1.1 (2021-03-24)
 - Small updates to Makefile for brew support
 
