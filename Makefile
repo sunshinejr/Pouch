@@ -12,12 +12,15 @@ CURRENT_DATE = $(shell date +%F)
 
 .PHONY: install build uninstall publish release
 
-install: build
-	mkdir -p $(PREFIX)/bin
-	cp -f $(BUILD_PATH) $(INSTALL_PATH)
+install: build move_binary
+	echo "Installed $(EXECUTABLE_NAME)"
 
 build:
 	swift build --disable-sandbox -c release --arch arm64 --arch x86_64
+
+move_binary:
+	mkdir -p $(PREFIX)/bin
+	cp -f $(BUILD_PATH) $(INSTALL_PATH)
 
 uninstall:
 	rm -f $(INSTALL_PATH)
