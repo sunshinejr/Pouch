@@ -33,7 +33,12 @@ enum Secret {
 }
 ```
 
-Now, add this file to your project structure and to `.gitignore`. The idea is that each developer would regenerate that file and not commit to the repository (however, you can use it however you want).
+Now, add this file to your project structure (and to `.gitignore`) and use it!
+```swift
+api.auth(key: Secret.apiKey, secret: Secret.apiSecret)
+```
+
+Note: The idea is that each developer would regenerate that file and not commit to the repository (however, you can use it however you want).
 
 ## Why?
 Let's face it - managing secret keys is not an easy task. We usually want:
