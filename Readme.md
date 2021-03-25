@@ -111,10 +111,10 @@ While this is for sure an improvement to your normal, plain-text based flow, thi
 If you want to learn more about secret management and it's security, I recomend you to read the whole article I linked at the top of the Readme: [NSHipster article regarding secret management](https://nshipster.com/secrets/)
 
 ## Kudos
-Thanks to @yonaskolb and the whole team behind Mint for a [pretty nice Makefile template in Mint]() that I slightly modified.<br />
-Thanks to @mxcl for a Swift clone of [Chalk](https://github.com/mxcl/Chalk) that Pouch uses for logging.<br />
-Thanks to @jpsim and the contributors of [Yams](https://github.com/jpsim/Yams) for a yummy YAML parser that just works.<br />
-Thanks to @natecook1000 and the contributors of [Swift Argument Parser](https://github.com/apple/swift-argument-parser) for an awesome experience that is building a modern command line tool.<br />
+Thanks to [@yonaskolb](https://github.com/yonaskolb) and the whole team behind Mint for a [pretty nice Makefile template in Mint]() that I slightly modified.<br />
+Thanks to [@mxcl](https://github.com/mxcl) for a Swift clone of [Chalk](https://github.com/mxcl/Chalk) that Pouch uses for logging.<br />
+Thanks to [@jpsim](https://github.com/jpsim) and the contributors of [Yams](https://github.com/jpsim/Yams) for a yummy YAML parser that just works.<br />
+Thanks to [@natecook1000](https://github.com/natecook1000) and the contributors of [Swift Argument Parser](https://github.com/apple/swift-argument-parser) for an awesome experience that is building a modern command line tool.<br />
 
 ## License
 [Mit](License.md)
