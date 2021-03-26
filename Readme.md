@@ -33,6 +33,7 @@ enum Secret {
 }
 ```
 <br />
+
 Now, add this file to your project structure (and to `.gitignore`) and use it!<br />
 
 ```swift
