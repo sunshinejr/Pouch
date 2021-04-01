@@ -41,7 +41,7 @@ enum \(config.typeName) {
 \(variables.map { "    " + $0.toFullDeclaration() }.joined(separator: "\n"))
 
 \(functions.unique().joined(separator: "\n\n"))
-}
+}\n
 """
     }
     
