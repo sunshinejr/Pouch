@@ -32,13 +32,16 @@ public struct SwiftGenerator {
 
         return
 """
+// swiftlint:disable all
+// Generated using Pouch — https://github.com/sunshinejr/Pouch
+
 \(imports.unique().map { "import \($0)" }.joined(separator: "\n"))
 
 enum \(config.typeName) {
-\(variables.map { "   " + $0.toFullDeclaration() }.joined(separator: "\n"))
+\(variables.map { "    " + $0.toFullDeclaration() }.joined(separator: "\n"))
 
 \(functions.unique().joined(separator: "\n\n"))
-}
+}\n
 """
     }
     
