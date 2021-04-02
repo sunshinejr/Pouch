@@ -4,7 +4,7 @@ import Foundation
 public struct Pouch: ParsableCommand {
     public static var configuration = CommandConfiguration(
         abstract: "A utility tool for secret management",
-        version: "0.1.2",
+        version: "0.2.0",
         subcommands: [Retrieve.self],
         defaultSubcommand: Retrieve.self
     )

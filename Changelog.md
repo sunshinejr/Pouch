@@ -1,4 +1,6 @@
 ## Next
+
+## 0.2.0 (2021-04-02)
 - Added `swiftlint:disable all` to the top of the file. [@Igor-Palaguta]
 - Added "Generated using Pouch" to the top of the file. [@Igor-Palaguta]
 - Fixed spacing in the generated file. [@Igor-Palaguta]

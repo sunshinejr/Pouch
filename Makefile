@@ -1,7 +1,7 @@
 # Slightly adjusted from: https://github.com/yonaskolb/Mint/blob/master/Makefile (thanks @yonaskolb!)
 EXECUTABLE_NAME = pouch
 REPO = https://github.com/sunshinejr/Pouch
-VERSION = 0.1.2
+VERSION = 0.2.0
 
 PREFIX = /usr/local
 INSTALL_PATH = $(PREFIX)/bin/$(EXECUTABLE_NAME)
