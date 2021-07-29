@@ -33,7 +33,6 @@ outputs:
 """
         let parsedConfiguration = try? YAMLDecoder().decode(Configuration.self, from: Data(config.utf8))
         let expectedConfiguration = Configuration(
-            input: Defaults.input,
             secrets: [
                 .init(name: "API_KEY", encryption: Defaults.encryption)
             ],

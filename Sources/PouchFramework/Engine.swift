@@ -3,9 +3,9 @@ import Foundation
 public struct Engine {
     public init() {}
     
-    public func createFiles(configuration: Configuration) {
+    public func createFiles(configuration: Configuration, input: Input) {
         logger.log(.variableFetcher, "Resolving input variables...")
-        resolve(declarations: configuration.secrets, input: configuration.input) { result in
+        resolve(declarations: configuration.secrets, input: input) { result in
             switch result {
             case let .success(secrets):
                 for output in configuration.outputs {
@@ -28,10 +28,10 @@ public struct Engine {
     public func resolve(declarations: [SecretDeclaration], input: Input, completion: (Result<[Secret], Error>) -> Void) {
         let fetcher: VariableFetching
         switch input {
+        case .environmentOrStandardInput:
+            fetcher = EnvironmentOrStdinVariableFetcher()
         case .environmentVariable:
             fetcher = EnvironmentVariableFetcher()
-        case .input:
-            fetcher = EnvironmentOrReadVariableFetcher()
         }
         fetcher.fetch(secrets: declarations, completion: completion)
     }

@@ -1,9 +1,4 @@
-public enum Input: String, Codable, Equatable {
+public enum Input {
     case environmentVariable
-    case input
-    
-    enum CodingKeys: String, CodingKey {
-        case environmentVariable = "env"
-        case input
-    }
+    case environmentOrStandardInput
 }

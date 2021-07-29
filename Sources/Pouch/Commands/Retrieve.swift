@@ -9,25 +9,45 @@ public struct Retrieve: ParsableCommand {
     @Option(help: "The config file used to generate the files.")
     var config: String = "./.pouch.yml"
 
-    @Flag
-    var ci: Bool = ProcessInfo.processInfo.environment[Defaults.environmentCiKey] == "true"
-    
+    enum FetchInput: EnumerableFlag {
+        case env
+        case envOrStdin
+    }
+
+    @Flag(help: "Fetcher choice between env variable or a standard input. Chooses env for CI automatically")
+    var input: FetchInput = .envOrStdin
+
     public init() {}
-    
+
     public func run() throws {
         do {
             // Since we cannot extend YAMLDecoder to attach a logger, work around that by setting a global logger property.
             PouchFramework.logger = logger
             logger.log(.parser, "Reading \(config, color: .green)...")
             let config = try String(contentsOf: URL(fileURLWithPath: self.config))
-            var mappedConfig: Configuration = try YAMLDecoder().decode(from: config)
-            if !ci {
-                mappedConfig.input = .input
-            }
+            let mappedConfig: Configuration = try YAMLDecoder().decode(from: config)
             logger.log(.parser, "\(self.config, color: .green) parsed successfully!")
-            Engine().createFiles(configuration: mappedConfig)
+
+            let fetchInput: Input
+            // Pouch should never ask for standard input when command is ran on CI
+            if ProcessInfo.processInfo.environment[Defaults.EnvironmentCI.key] == Defaults.EnvironmentCI.trueValue {
+                fetchInput = .environmentVariable
+            } else {
+                fetchInput = Input(input)
+            }
+
+            Engine().createFiles(configuration: mappedConfig, input: fetchInput)
         } catch {
             logger.log(.parser, "Error when parsing \(config, color: .blue): \(error, color: .red)")
+        }
+    }
+}
+
+extension Input {
+    init(_ input: Retrieve.FetchInput) {
+        switch input {
+        case .env: self = .environmentVariable
+        case .envOrStdin: self = .environmentOrStandardInput
         }
     }
 }

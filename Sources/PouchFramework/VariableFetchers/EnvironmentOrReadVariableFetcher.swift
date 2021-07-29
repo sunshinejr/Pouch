@@ -1,6 +1,6 @@
 import Foundation
 
-public struct EnvironmentOrReadVariableFetcher: VariableFetching {
+public struct EnvironmentOrStdinVariableFetcher: VariableFetching {
     public func fetch(secrets: [SecretDeclaration], completion: (Result<[Secret], Error>) -> Void) {
         let environment = ProcessInfo.processInfo.environment
         var resolvedSecrets = [Secret]()
@@ -27,7 +27,7 @@ public struct EnvironmentOrReadVariableFetcher: VariableFetching {
         from environment: [String: String]
     ) throws -> String {
         guard let value = environment[secret.name] else {
-            throw VariableFetchingError.variableNotFound(name: secret.name, input: .environmentVariable)
+            throw VariableFetchingError.variableNotFound(name: secret.name, input: .environmentOrStandardInput)
         }
         return value
     }
@@ -36,7 +36,7 @@ public struct EnvironmentOrReadVariableFetcher: VariableFetching {
         logger.log(.variableFetcher, "Enter value for \(secret.name) secret")
         let value = readLine()
         guard let value = value, value.isNotEmpty else {
-            throw VariableFetchingError.variableNotFound(name: secret.name, input: .input)
+            throw VariableFetchingError.variableNotFound(name: secret.name, input: .environmentOrStandardInput)
         }
         return value
     }
