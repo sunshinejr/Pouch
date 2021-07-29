@@ -8,6 +8,9 @@ public struct Retrieve: ParsableCommand {
     
     @Option(help: "The config file used to generate the files.")
     var config: String = "./.pouch.yml"
+
+    @Flag
+    var ci: Bool = ProcessInfo.processInfo.environment[Defaults.environmentCiKey] == "true"
     
     public init() {}
     
@@ -17,7 +20,10 @@ public struct Retrieve: ParsableCommand {
             PouchFramework.logger = logger
             logger.log(.parser, "Reading \(config, color: .green)...")
             let config = try String(contentsOf: URL(fileURLWithPath: self.config))
-            let mappedConfig: Configuration = try YAMLDecoder().decode(from: config)
+            var mappedConfig: Configuration = try YAMLDecoder().decode(from: config)
+            if !ci {
+                mappedConfig.input = .input
+            }
             logger.log(.parser, "\(self.config, color: .green) parsed successfully!")
             Engine().createFiles(configuration: mappedConfig)
         } catch {

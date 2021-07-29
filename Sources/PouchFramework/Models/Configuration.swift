@@ -1,7 +1,7 @@
 import Foundation
 
 public struct Configuration: Codable, Equatable {
-    public let input: Input
+    public var input: Input
     public let secrets: [SecretDeclaration]
     public let outputs: [Output]
     

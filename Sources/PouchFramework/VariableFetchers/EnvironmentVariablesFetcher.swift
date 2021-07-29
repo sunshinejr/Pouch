@@ -9,10 +9,10 @@ public struct EnvironmentVariableFetcher: VariableFetching {
                 completion(.failure(VariableFetchingError.variableNotFound(name: secret.name, input: .environmentVariable)))
                 return
             }
-            
+
             resolvedSecrets.append(secret.with(value: value))
         }
-        
+
         completion(.success(resolvedSecrets))
     }
 }
