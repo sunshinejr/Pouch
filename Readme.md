@@ -1,5 +1,5 @@
 # Pouch
-Secret management tool written in Swift. This was heavily inspired by [CcocoaPods-Keys](https://github.com/orta/cocoapods-keys) & [NSHipster article regarding secret management](https://nshipster.com/secrets/).
+Secret management tool written in Swift. This was heavily inspired by [CocoaPods-Keys](https://github.com/orta/cocoapods-keys) & [NSHipster article regarding secret management](https://nshipster.com/secrets/).
 
 ## Usage
 
@@ -110,7 +110,7 @@ This project is at its early stage and it currently only supports `xor` with ran
 
 ## Notes about security
 While this is for sure an improvement to your normal, plain-text based flow, this doesn't guarantee that your keys won't be reverse-engineered.
-If you want to learn more about secret management and it's security, I recomend you to read the whole article I linked at the top of the Readme: [NSHipster article regarding secret management](https://nshipster.com/secrets/)
+If you want to learn more about secret management and it's security, I recommend you to read the whole article I linked at the top of the Readme: [NSHipster article regarding secret management](https://nshipster.com/secrets/)
 
 ## Kudos
 - to [@nshipster](https://github.com/NSHipster) folks for awesome articles, especially on [secret management](https://nshipster.com/secrets/) & [Homebrew releases](https://nshipster.com/homebrew/),<br />
