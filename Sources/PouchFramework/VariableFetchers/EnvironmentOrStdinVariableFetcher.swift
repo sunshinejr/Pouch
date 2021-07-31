@@ -34,8 +34,8 @@ public struct EnvironmentOrStdinVariableFetcher: VariableFetching {
 
     func readValueFromInput(secret: SecretDeclaration) throws -> String {
         logger.log(.variableFetcher, "Enter value for \(secret.name) secret")
-        let value = readLine()
-        guard let value = value, value.isNotEmpty else {
+        let stdinValue = readLine()
+        guard let value = stdinValue, value.isNotEmpty else {
             throw VariableFetchingError.variableNotFound(name: secret.name, input: .environmentOrStandardInput)
         }
         return value
