@@ -14,7 +14,7 @@ public struct Retrieve: ParsableCommand {
         case envOrStdin
     }
 
-    @Flag(help: "Fetcher choice between env variable or a standard input. Chooses env for CI automatically")
+    @Flag(help: "Fetcher choice that overrides to env automatically when CI=true.")
     var input: FetchInput = .envOrStdin
 
     public init() {}
