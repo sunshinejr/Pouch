@@ -23,7 +23,7 @@ outputs:
         XCTAssertNil(parsedConfiguration)
     }
     
-    func test_hasAtLeastOneSecretAndOneOutput_parsesSuccessfully() {
+    func test_hasAtLeastOneSecretAndOneOutput_parsesSuccessfully() throws {
         let config =
 """
 secrets:
@@ -31,8 +31,9 @@ secrets:
 outputs:
 - ./Secrets.swift
 """
-        let parsedConfiguration = try? YAMLDecoder().decode(Configuration.self, from: Data(config.utf8))
+        let parsedConfiguration = try XCTUnwrap(try YAMLDecoder().decode(Configuration.self, from: Data(config.utf8)))
         let expectedConfiguration = Configuration(
+            input: Defaults.input,
             secrets: [
                 .init(name: "API_KEY", encryption: Defaults.encryption)
             ],
@@ -41,6 +42,27 @@ outputs:
             ])
         XCTAssertEqual(parsedConfiguration, expectedConfiguration)
     }
+
+  func test_hasAtLeastOneSecretAndOneOutputWithEnvOrStdinInput_parsesSuccessfully() throws {
+    let config =
+      """
+input: env-or-stdin
+secrets:
+- API_KEY
+outputs:
+- ./Secrets.swift
+"""
+    let parsedConfiguration = try XCTUnwrap(try YAMLDecoder().decode(Configuration.self, from: Data(config.utf8)))
+    let expectedConfiguration = Configuration(
+      input: .environmentOrStandardInput,
+      secrets: [
+        .init(name: "API_KEY", encryption: Defaults.encryption)
+      ],
+      outputs: [
+        .init(decryptionFile: .init(filePath: "./Secrets.swift"), outputLanguage: .swift(.init(typeName: Defaults.Swift.typeName)))
+      ])
+    XCTAssertEqual(parsedConfiguration, expectedConfiguration)
+  }
 }
 
 extension ConfigurationParsingTests {

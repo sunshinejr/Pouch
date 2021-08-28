@@ -9,14 +9,6 @@ public struct Retrieve: ParsableCommand {
     @Option(help: "The config file used to generate the files.")
     var config: String = "./.pouch.yml"
 
-    enum FetchInput: EnumerableFlag {
-        case env
-        case envOrStdin
-    }
-
-    @Flag(help: "Fetcher choice that overrides to env automatically when CI=true.")
-    var input: FetchInput = .envOrStdin
-
     public init() {}
 
     public func run() throws {
@@ -25,29 +17,30 @@ public struct Retrieve: ParsableCommand {
             PouchFramework.logger = logger
             logger.log(.parser, "Reading \(config, color: .green)...")
             let config = try String(contentsOf: URL(fileURLWithPath: self.config))
-            let mappedConfig: Configuration = try YAMLDecoder().decode(from: config)
+            var mappedConfig: Configuration = try YAMLDecoder().decode(from: config)
             logger.log(.parser, "\(self.config, color: .green) parsed successfully!")
 
-            let fetchInput: Input
-            // Pouch should never ask for standard input when command is ran on CI
-            if ProcessInfo.processInfo.environment[Defaults.EnvironmentCI.key] == Defaults.EnvironmentCI.trueValue {
-                fetchInput = .environmentVariable
-            } else {
-                fetchInput = Input(input)
-            }
+            mappedConfig = overrideConfigurationIfRequired(mappedConfig)
 
-            Engine().createFiles(configuration: mappedConfig, input: fetchInput)
+            Engine().createFiles(configuration: mappedConfig)
         } catch {
             logger.log(.parser, "Error when parsing \(config, color: .blue): \(error, color: .red)")
         }
     }
-}
 
-extension Input {
-    init(_ input: Retrieve.FetchInput) {
-        switch input {
-        case .env: self = .environmentVariable
-        case .envOrStdin: self = .environmentOrStandardInput
+    private func overrideConfigurationIfRequired(_ configuration: Configuration) -> Configuration {
+        // Pouch should never ask for stdin when command is ran on CI
+        if
+            configuration.input == .environmentOrStandardInput,
+            ProcessInfo.processInfo.environment[Defaults.EnvironmentCI.key] == Defaults.EnvironmentCI.trueValue
+        {
+            logger.log(.parser, "Overriding input to env because command is used on CI")
+            return Configuration(
+                input: .environmentVariable,
+                secrets: configuration.secrets,
+                outputs: configuration.outputs
+            )
         }
+        return configuration
     }
 }

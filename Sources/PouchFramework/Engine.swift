@@ -3,9 +3,9 @@ import Foundation
 public struct Engine {
     public init() {}
     
-    public func createFiles(configuration: Configuration, input: Input) {
+    public func createFiles(configuration: Configuration) {
         logger.log(.variableFetcher, "Resolving input variables...")
-        resolve(declarations: configuration.secrets, input: input) { result in
+        resolve(declarations: configuration.secrets, input: configuration.input) { result in
             switch result {
             case let .success(secrets):
                 for output in configuration.outputs {

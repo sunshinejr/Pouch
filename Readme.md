@@ -82,6 +82,7 @@ outputs:
 ### Generated secret name
 You are also able to provide a custom generated name for a secret (otherwise it will do the `camelCase`):
 ```yaml
+input: env # default
 secrets:
 - name: API_KEY
   generatedName: youtubeApiKey
@@ -90,7 +91,9 @@ outputs:
 - ./Secrets.swift
 ```
 
-There are also things like custom inputs, but for now we only support environment variables.
+`input: env-or-stdin` supports secrets retrieval from stdin (reading user input) for easier manual usage.
+
+Input will automatically be converted to env on CI environment because stdin is not meant to be used in non-interactive shell. Pouch checks if CI=true for that logic.
 
 ## Installing
 You can either build & install it by using my Homebrew tap:
