@@ -1,7 +1,5 @@
 public enum Input: String, Codable, Equatable {
-    case environmentVariable
-    
-    enum CodingKeys: String, CodingKey {
-        case environmentVariable = "env"
-    }
+    case environmentVariable = "env"
+    /// Overrides in Retrieve command to env when CI=true.
+    case environmentOrStandardInput = "env-or-stdin"
 }

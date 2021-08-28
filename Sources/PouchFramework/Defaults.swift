@@ -7,4 +7,8 @@ public extension Defaults {
     enum Swift {
         public static let typeName = "Secrets"
     }
+    enum EnvironmentCI {
+        public static let key = "CI"
+        public static let trueValue = "true"
+    }
 }

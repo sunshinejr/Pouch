@@ -26,10 +26,14 @@ public struct Engine {
     }
     
     public func resolve(declarations: [SecretDeclaration], input: Input, completion: (Result<[Secret], Error>) -> Void) {
+        let fetcher: VariableFetching
         switch input {
+        case .environmentOrStandardInput:
+            fetcher = EnvironmentOrStdinVariableFetcher()
         case .environmentVariable:
-            EnvironmentVariableFetcher().fetch(secrets: declarations, completion: completion)
+            fetcher = EnvironmentVariableFetcher()
         }
+        fetcher.fetch(secrets: declarations, completion: completion)
     }
     
     public func generateFileContents(secrets: [Secret], output: Output, logger: Logging) throws -> String {
