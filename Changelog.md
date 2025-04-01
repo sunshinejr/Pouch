@@ -1,4 +1,5 @@
 ## Next
+- Updated min macOS version to 13.0.
 
 ## 0.2.0 (2021-04-02)
 - Added `swiftlint:disable all` to the top of the file. [@Igor-Palaguta]
