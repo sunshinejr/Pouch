@@ -19,6 +19,15 @@
       }
     },
     {
+      "identity" : "firebase-ios-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sunshinejr/firebase-ios-sdk",
+      "state" : {
+        "branch" : "fork",
+        "revision" : "e0223265b8fa59ddab1818d2bba70632022056e1"
+      }
+    },
+    {
       "identity" : "googleappmeasurement",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/GoogleAppMeasurement.git",

@@ -11,6 +11,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", exact: "1.5.0"),
         .package(url: "https://github.com/jpsim/Yams", exact: "4.0.4"),
+        .package(url: "https://github.com/sunshinejr/firebase-ios-sdk", branch: "fork")
     ],
     targets: [
         .executableTarget(
@@ -23,6 +24,7 @@ let package = Package(
         .target(
             name: "PouchFramework",
             dependencies: [
+                .product(name: "FirebaseRemoteConfig", package: "firebase-ios-sdk"),
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]),
         .testTarget(name: "PouchTests", dependencies: ["PouchFramework", "Yams"]),
