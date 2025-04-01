@@ -10,20 +10,21 @@ final class OutputParsingTests: XCTestCase {
 """
         let parsedOutputs = try? YAMLDecoder().decode([Output].self, from: Data(config.utf8))
         let expectedOutputs = [
-            Output(decryptionFile: .init(filePath: "./Secrets.swift"), outputLanguage: .swift(.init(typeName: Defaults.Swift.typeName)))
+            Output(decryptionFile: .init(filePath: "./Secrets.swift"), representation: .staticVariables, outputLanguage: .swift(.init(typeName: Defaults.Swift.typeName)))
         ]
         XCTAssertEqual(parsedOutputs, expectedOutputs)
     }
     
-    func test_namedParameters_withFilePathAndTypeName_parsesSuccessfully() {
+    func test_namedParameters_withFilePathAndTypeName_parsesSuccessfully() throws {
         let config =
 """
 - filePath: ./Sauce.swift
   typeName: Sauce
+  representation: staticVariables
 """
-        let parsedOutputs = try? YAMLDecoder().decode([Output].self, from: Data(config.utf8))
+        let parsedOutputs = try YAMLDecoder().decode([Output].self, from: Data(config.utf8))
         let expectedOutputs = [
-            Output(decryptionFile: .init(filePath: "./Sauce.swift"), outputLanguage: .swift(.init(typeName: "Sauce")))
+            Output(decryptionFile: .init(filePath: "./Sauce.swift"), representation: .staticVariables, outputLanguage: .swift(.init(typeName: "Sauce")))
         ]
         XCTAssertEqual(parsedOutputs, expectedOutputs)
     }
@@ -37,8 +38,24 @@ final class OutputParsingTests: XCTestCase {
 """
         let parsedOutputs = try? YAMLDecoder().decode([Output].self, from: Data(config.utf8))
         let expectedOutputs = [
-            Output(decryptionFile: .init(filePath: "./Secrets.swift"), outputLanguage: .swift(.init(typeName: Defaults.Swift.typeName))),
-            Output(decryptionFile: .init(filePath: "./Sauce.swift"), outputLanguage: .swift(.init(typeName: "Sauce")))
+            Output(decryptionFile: .init(filePath: "./Secrets.swift"), representation: .staticVariables, outputLanguage: .swift(.init(typeName: Defaults.Swift.typeName))),
+            Output(decryptionFile: .init(filePath: "./Sauce.swift"), representation: .staticVariables, outputLanguage: .swift(.init(typeName: "Sauce")))
+        ]
+        XCTAssertEqual(parsedOutputs, expectedOutputs)
+    }
+
+    func test_outputRepresentation_withNamedParameters_parsesSuccessfully() throws {
+        let config =
+"""
+- ./Secrets.swift
+- filePath: ./SecretsDictionary.swift
+  typeName: SecretsDictionary
+  representation: dictionary
+"""
+        let parsedOutputs = try YAMLDecoder().decode([Output].self, from: Data(config.utf8))
+        let expectedOutputs = [
+            Output(decryptionFile: .init(filePath: "./Secrets.swift"), representation: .staticVariables, outputLanguage: .swift(.init(typeName: Defaults.Swift.typeName))),
+            Output(decryptionFile: .init(filePath: "./SecretsDictionary.swift"), representation: .dictionary, outputLanguage: .swift(.init(typeName: "SecretsDictionary")))
         ]
         XCTAssertEqual(parsedOutputs, expectedOutputs)
     }

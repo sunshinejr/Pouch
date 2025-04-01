@@ -3,31 +3,50 @@ public struct SwiftGenerator {
         let name: String
         let type: String
         let value: String
-        
+        let encryptedValue: String
+
         func toFullDeclaration() -> String {
-            return "static let \(name): \(type) = \(value)"
+            return "static let \(name): \(type) = \(encryptedValue)"
+        }
+
+        func toDictionaryDeclaration() -> String {
+            return "\"\(name)\": \(encryptedValue),"
         }
     }
     
     public init() {}
     
-    public func generateFileContents(secrets: [Secret], config: SwiftConfig) -> String {
+    public func generateFileContents(secrets: [Secret], representation: OutputRepresentation, config: SwiftConfig) -> String {
         var imports = [String]()
         var functions = [String]()
         var variables = [SecretVariable]()
-        
+
         for secret in secrets {
             let cipher = cipherGenerator(for: secret)
-            let value = cipher.variableValue(for: secret, config: config)
+            let encryptedValue = cipher.variableValue(for: secret, config: config)
             let variable = SecretVariable(
-                name: secret.generatedName ?? secret.name.toCamelCase(),
+                name: secret.generatedName ?? representation.generateName(for: secret.name),
                 type: "String",
-                value: value
+                value: secret.value,
+                encryptedValue: encryptedValue
             )
-            
+
             imports.append(contentsOf: cipher.neededImports())
             functions.append(contentsOf: cipher.neededHelperFunctions())
             variables.append(variable)
+        }
+
+        let variablesString = switch representation {
+        case .dictionary:
+            """
+    public static var dictionary: [String: String] = [
+\(variables.map { "        " +  $0.toDictionaryDeclaration() }.joined(separator: "\n"))
+    ]
+"""
+        case .staticVariables:
+            """
+\(variables.map { "    " + $0.toFullDeclaration() }.joined(separator: "\n"))
+"""
         }
 
         return
@@ -37,8 +56,8 @@ public struct SwiftGenerator {
 
 \(imports.unique().map { "import \($0)" }.joined(separator: "\n"))
 
-enum \(config.typeName) {
-\(variables.map { "    " + $0.toFullDeclaration() }.joined(separator: "\n"))
+public enum \(config.typeName) {
+\(variablesString)
 
 \(functions.unique().joined(separator: "\n\n"))
 }\n

@@ -1,6 +1,7 @@
 # Next
 
 ## 0.3.0
+- Added `representation` option to the output (for now you can use dictionary/staticVariables)
 - Updated min macOS version to 13.0.
 
 ## 0.2.0 (2021-04-02)

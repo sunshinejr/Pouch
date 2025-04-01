@@ -31,14 +31,14 @@ public struct Engine {
             EnvironmentVariableFetcher().fetch(secrets: declarations, completion: completion)
         }
     }
-    
-    public func generateFileContents(secrets: [Secret], output: Output, logger: Logging) throws -> String {
+
+    public func generateFileContents(secrets: [Secret], output: Output, logger _: Logging) throws -> String {
         switch output.outputLanguage {
         case let .swift(swiftConfig):
-            return SwiftGenerator().generateFileContents(secrets: secrets, config: swiftConfig)
+            return SwiftGenerator().generateFileContents(secrets: secrets, representation: output.representation, config: swiftConfig)
         }
     }
-    
+
     private func write(fileContents contents: String, to file: DecryptionFile) throws {
         let url = URL(fileURLWithPath: file.filePath)
         try contents.write(to: url, atomically: true, encoding: .utf8)
