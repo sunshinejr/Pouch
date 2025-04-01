@@ -1,6 +1,7 @@
 # Next
 
 ## 0.3.0
+- Added firebase option for input (where previously it was only environment variables). You can now use Info.plist for Firebase RemoteConfig variable fetcher
 - Added optional `environments`, which derive all options from global settings
 - Added `representation` option to the output (for now you can use dictionary/staticVariables)
 - Updated min macOS version to 13.0.
