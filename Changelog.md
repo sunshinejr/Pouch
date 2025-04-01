@@ -1,4 +1,6 @@
-## Next
+# Next
+
+## 0.3.0
 - Updated min macOS version to 13.0.
 
 ## 0.2.0 (2021-04-02)
