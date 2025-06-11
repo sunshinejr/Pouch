@@ -2,19 +2,19 @@ import Foundation
 
 public struct EnvironmentConfiguration: Codable, Equatable {
     public let input: Input?
-    public let secrets: [SecretDeclaration]?
+    public let keys: [KeyDeclaration]?
     public let outputs: [Output]?
 
-    public init(input: Input? = nil, secrets: [SecretDeclaration]? = nil, outputs: [Output]? = nil) {
+    public init(input: Input? = nil, keys: [KeyDeclaration]? = nil, outputs: [Output]? = nil) {
         self.input = input
-        self.secrets = secrets
+        self.keys = keys
         self.outputs = outputs
     }
 }
 
 public struct Configuration: Codable, Equatable {
-    public let input: Input
-    public let secrets: [SecretDeclaration]
+    public let keys: [KeyDeclaration]
+    public let input: Input?
     public let outputs: [Output]
     public let environments: [String: EnvironmentConfiguration]?
 
@@ -27,21 +27,21 @@ public struct Configuration: Codable, Equatable {
     }
 
     public init(
-        input: Input,
-        secrets: [SecretDeclaration],
+        keys: [KeyDeclaration],
+        input: Input?,
         outputs: [Output],
         environments: [String: EnvironmentConfiguration]? = nil
     ) {
         self.input = input
-        self.secrets = secrets
+        self.keys = keys
         self.outputs = outputs
         self.environments = environments
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        input = try (container.decodeIfPresent(Input.self, forKey: .input)) ?? Defaults.input
-        secrets = try container.decode([SecretDeclaration].self, forKey: .secrets)
+        keys = try container.decode([KeyDeclaration].self, forKey: .keys)
+        input = try container.decodeIfPresent(Input.self, forKey: .input)
         outputs = try (container.decodeIfPresent([Output].self, forKey: .outputs)) ?? []
         environments = try container.decodeIfPresent([String: EnvironmentConfiguration].self, forKey: .environments)
     }
@@ -55,8 +55,8 @@ public struct Configuration: Codable, Equatable {
         }
 
         return Configuration(
+            keys: envConfig.keys ?? keys,
             input: envConfig.input ?? input,
-            secrets: envConfig.secrets ?? secrets,
             outputs: envConfig.outputs ?? outputs
         )
     }
