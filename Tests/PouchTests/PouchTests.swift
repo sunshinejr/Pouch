@@ -9,17 +9,20 @@ final class PouchTests: XCTestCase {
 
     func test_generatesFileBasedOnConfig() throws {
         let secretApiKey = "secret_sauce_monke_boi🐒"
-        let generatedFileUrl = URL(fileURLWithPath: "./Secrets2.swift")
+        let tempDir = FileManager.default.temporaryDirectory
+        let generatedFileUrl = tempDir.appendingPathComponent("Secrets2.swift")
         let config = """
-secrets:
+keys:
 - name: API_KEY_4
-  generatedName: apiKey4
+input:
+  type: env
 outputs:
-- filePath: ./Secrets2.swift
+- filePath: \(generatedFileUrl.path)
   typeName: Sauce
 """
         let configFile = try config.saveToTemporaryDirectory()
-        try Process.run(tool: .pouch, arguments: ["retrieve", "--config", configFile.path], environmentVariables: ["API_KEY_4": secretApiKey])
+        let pouchOutput = try Process.run(tool: .pouch, arguments: ["retrieve", "--config", configFile.path], environmentVariables: ["API_KEY_4": secretApiKey])
+        print("Pouch output: \(pouchOutput)")
         let generatedFileContents = try String(contentsOfFile: generatedFileUrl.path)
         let generatedFileContentsWithPrint = generatedFileContents + "\n print(Sauce.apiKey4)"
         try generatedFileContentsWithPrint.write(toFile: generatedFileUrl.path, atomically: true, encoding: .utf8)
