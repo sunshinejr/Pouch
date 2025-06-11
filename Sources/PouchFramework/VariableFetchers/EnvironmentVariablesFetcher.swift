@@ -1,16 +1,17 @@
 import Foundation
 
-public struct EnvironmentVariableFetcher: VariableFetching {
-    public func fetch(secrets: [SecretDeclaration]) async throws -> [Secret] {
+public struct EnvironmentVariableFetcher {
+    public func fetch(declarations: [KeyDeclaration], keyMapping: [String: String]) async throws -> [Key] {
         let environment = ProcessInfo.processInfo.environment
-        var resolvedSecrets = [Secret]()
-        for secret in secrets {
-            guard let value = environment[secret.name] else {
-                throw VariableFetchingError.variableNotFound(name: secret.name, input: .environmentVariable)
+        var resolvedKeys = [Key]()
+        for declaration in declarations {
+            let mappedKey = keyMapping[declaration.name] ?? declaration.name
+            guard let value = environment[mappedKey] else {
+                throw VariableFetchingError.variableNotFound(name: declaration.name, input: .environmentVariable(keyMapping))
             }
             
-            resolvedSecrets.append(secret.with(value: value))
+            resolvedKeys.append(declaration.with(value: value))
         }
-        return resolvedSecrets
+        return resolvedKeys
     }
 }
