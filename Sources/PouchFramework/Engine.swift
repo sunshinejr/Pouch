@@ -43,6 +43,14 @@ public final class Engine {
         case let .firebaseRemoteConfig(configPath, keyMapping):
             let fetcher = try FirebaseRemoteConfigFetcher(configPath: configPath)
             return try await fetcher.fetch(declarations: declarations, keyMapping: keyMapping)
+        case let .onePassword(vault, section, keyMapping):
+            let fetcher = if let fetcher = onePasswordFetcher, fetcher.vault == vault {
+                fetcher
+            } else {
+                try OnePasswordFetcher(vault: vault)
+            }
+            self.onePasswordFetcher = fetcher
+            return try await fetcher.fetch(declarations: declarations, section: section, keyMapping: keyMapping)
         }
     }
 
