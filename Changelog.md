@@ -1,5 +1,8 @@
 # Next
 
+## 0.4.0
+- Added ability to read all .pouch.yml files from current directory, supporting multiple configurations
+
 ## 0.3.0
 - Added `--print-secrets` flag that outputs resolved secrets per environment to standard output
 - Added firebase option for input (where previously it was only environment variables). You can now use Info.plist for Firebase RemoteConfig variable fetcher
