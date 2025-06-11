@@ -1,6 +1,12 @@
 # Next
 
 ## 0.4.0
+- Added `none` to encryption, which allows for config to also be bundled into the app (default is still `xor`)
+- Added 1password cli option for input
+- Added more configuration to Swift language output (`isStatic`, `accessLevel`, `implementations`, `keyMapping`)
+- Moved encryption per output, not per secret
+- Removed `staticVariables` representation option, added new `variables` and `dictionary`
+- Renamed `secrets` to `keys` in .pouych.yml file
 - Added ability to read all .pouch.yml files from current directory, supporting multiple configurations
 
 ## 0.3.0
