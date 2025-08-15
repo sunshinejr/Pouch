@@ -5,7 +5,7 @@ import PouchFramework
 @main public struct Pouch: AsyncParsableCommand {
     public static var configuration = CommandConfiguration(
         abstract: "A utility tool for secret management",
-        version: "0.3.0",
+        version: "0.4.0",
         subcommands: [Retrieve.self],
         defaultSubcommand: Retrieve.self
     )

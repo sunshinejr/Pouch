@@ -1,29 +1,44 @@
 # Pouch
-Secret management tool written in Swift. This was heavily inspired by [CcocoaPods-Keys](https://github.com/orta/cocoapods-keys) & [NSHipster article regarding secret management](https://nshipster.com/secrets/).
+A secure key management tool for Swift projects. Pouch helps you manage API keys and secrets by generating obfuscated Swift code, keeping sensitive data out of your repository while maintaining ease of use.
 
-## Usage
+Heavily inspired by [CocoaPods-Keys](https://github.com/orta/cocoapods-keys) & [NSHipster's article on secret management](https://nshipster.com/secrets/).
 
-Set up a config file for a project once:
+## Features
+
+- 🔐 **Multiple Input Sources**: Environment variables, 1Password, Firebase Remote Config (experimental)
+- 🎯 **Environment-based Configuration**: Different keys for development, staging, and production
+- 🔒 **Obfuscation**: XOR cipher with random salt generation
+- 🚀 **Swift Code Generation**: Type-safe access to your keys
+- 📦 **Zero Runtime Dependencies**: Generated code is standalone
+
+## Quick Start
+
+Create a `.pouch.yml` configuration file:
 ```yaml
-secrets:
+keys:
 - API_KEY
 - API_SECRET
+
+input:
+  type: env
+
 outputs:
-- ./Secrets.swift
+- filePath: ./Secrets.swift
+  typeName: Secrets
 ```
 
-Now, with `API_KEY` and `API_SECRET` stored in environment variables, you can generate a file with secrets using:
-```
+With `API_KEY` and `API_SECRET` in your environment variables, run:
+```bash
 pouch retrieve
 ```
 
-Which should generate an output similar to this one (applied `xor` on a string (+ randomly generated salt) with a reverse func to read it in the app)):
+This generates an obfuscated Swift file:
 ```swift
 import Foundation
 
-enum Secret {
-    static let apiKey: String = Secret._xored([15, 26, 26, 243, 46, 124, 234, 140, 48, 169, 192], salt: [97, 115, 121, 150, 65, 18, 143, 225, 81, 221, 165, 134, 36, 222, 157, 20, 172, 203, 97, 8, 26, 81, 49, 144, 147, 1, 197, 21, 35, 32, 83, 156, 247, 108, 211, 108, 202, 174, 119, 134, 141, 176, 180, 38, 171, 110, 89, 21, 213, 32, 171, 146, 63, 245, 87, 139, 162, 194, 63, 57, 75, 0, 165, 122, 142])
-    static let apiSecret: String = Secret._xored([153, 59, 35, 31, 242, 106, 45, 3, 19, 67, 207, 9, 190, 40, 55, 197, 218, 221, 1, 40, 170, 117, 103, 211, 204, 168, 44, 18, 39, 207, 44, 158, 217, 135, 163, 16, 145, 120, 158, 221, 212, 49, 229, 116, 188, 145, 91, 203, 174, 184, 158, 78, 146, 106, 100, 166, 93, 239, 8, 18, 38, 129, 97, 249, 218, 137, 48, 58, 80, 252, 102, 47, 7, 92, 90, 194, 64, 61, 151, 221, 39], salt: [252, 85, 73, 112, 139, 3, 67, 100, 51, 55, 167, 96, 205, 8, 68, 168, 187, 177, 109, 8, 222, 26, 8, 191, 243, 136, 101, 50, 80, 160, 89, 242, 189, 167, 207, 127, 231, 29, 190, 174, 187, 92, 128, 84, 212, 244, 55, 187, 142, 207, 247, 58, 250, 74, 13, 210, 124, 207, 88, 64, 85, 174, 8, 138, 169])
+enum Secrets {
+    static let apiKey: String = Secrets._xored([15, 26, 26, ...], salt: [97, 115, 121, ...])
+    static let apiSecret: String = Secrets._xored([153, 59, 35, ...], salt: [252, 85, 73, ...])
 
     private static func _xored(_ secret: [UInt8], salt: [UInt8]) -> String {
         return String(bytes: secret.enumerated().map { index, character in
@@ -32,65 +47,186 @@ enum Secret {
     }
 }
 ```
-<br />
 
-Now, add this file to your project structure (and to `.gitignore`) and use it!<br />
-
+Add the generated file to your project (and `.gitignore`), then use it:
 ```swift
-api.auth(key: Secret.apiKey, secret: Secret.apiSecret)
+api.configure(key: Secrets.apiKey, secret: Secrets.apiSecret)
 ```
 
-Note: The idea is that each developer would regenerate that file and not commit to the repository (however, you can use it however you want).
+## Installation
 
-## Why?
-Let's face it - managing secret keys is not an easy task. We usually want:
-1. Protect ourselves against unwanted intruders that gain access to the repository (plain text is bad and so is e.g. symetric cryptography that only needs the attacker to either run the code to get the keys or calculate the secret by hand)
-2. Protect ourselves against unwanted access to binary through e.g. jailbreak (e.g. in iOS the binary will hold plain text keys even if you ignored them in git, storing them in `.xcconfig` makes it even easier to the attacker)
-3. The secret management to be as simple as possible.
-
-While writing this tool there was nothing that I found that helped with all of the above.
-
-`pouch` will make sure that static analysis tools will not be able to get to the keys easily. Though, for your own good, do not commit this file to the repository. 
-
-
-## Configuration options
-The config is in [YAML](https://yaml.org/spec/1.2/spec.html) format. By default the tool will look for `.pouch.yml` file, but you can provide a custom file path as a parameter:
-```
-pouch retrieve --config ./.custom.pouch.yml
+### Homebrew
+```bash
+brew install sunshinejr/formulae/pouch
 ```
 
-For the config itself, you are required to have at least one secret and one output:
+### From Source
+```bash
+git clone https://github.com/sunshinejr/Pouch.git
+cd Pouch
+make install
+```
+
+## Configuration
+
+Pouch uses YAML configuration files (default: `.pouch.yml`). You can specify a custom config file:
+```bash
+pouch retrieve --config ./custom-config.yml
+```
+
+### Basic Configuration
+
+The minimal configuration requires at least one key and one output:
 ```yaml
-secrets:
+keys:
 - API_KEY
+
+input:
+  type: env
+
 outputs:
-- ./Secrets.swift
+- filePath: ./Secrets.swift
 ```
 
-Though, there are also custom properties you can set.
+### Input Sources
 
-### Generated type name 
-You can change the generated type name (it's `Secrets` by default):
+#### Environment Variables (Default)
 ```yaml
-secrets:
+input:
+  type: env
+  keyMapping:
+    API_KEY: MY_CUSTOM_ENV_VAR  # Optional: map to different env var names
+```
+
+#### 1Password
+```yaml
+input:
+  type: 1password
+  vault: MyVault
+  account: my-account@example.com  # Optional: specific 1Password account
+  section: production
+  keyMapping:
+    API_KEY: prod_api_key  # Optional: map to different item names
+```
+
+**Requirements:**
+- 1Password CLI (`op`) must be installed
+- Must be signed in to 1Password (`op signin`)
+
+#### Firebase Remote Config (Experimental ⚠️)
+```yaml
+input:
+  type: firebase
+  configPath: ./GoogleService-Info.plist
+  keyMapping:
+    FEATURE_FLAG: remote_feature_flag_key
+```
+
+**Note:** Firebase Remote Config support is experimental and may have issues with configuration propagation. Best suited for non-sensitive configuration values rather than secrets.
+
+### Multiple Environments
+
+Configure different keys for different environments:
+```yaml
+keys:
 - API_KEY
+- DATABASE_URL
+- ANALYTICS_ID
+
+environments:
+  dev:
+    input:
+      type: env
+    outputs:
+      - filePath: ./Secrets-Dev.swift
+        typeName: DevSecrets
+  
+  staging:
+    input:
+      type: 1password
+      vault: Staging
+      section: api-keys
+    outputs:
+      - filePath: ./Secrets-Staging.swift
+        typeName: StagingSecrets
+  
+  prod:
+    input:
+      type: 1password
+      vault: Production
+      account: company-account@1password.com
+      section: api-keys
+    outputs:
+      - filePath: ./Secrets-Prod.swift
+        typeName: ProdSecrets
+```
+
+### Output Configuration
+
+#### Custom Type Names
+```yaml
 outputs:
 - filePath: ./Constants.swift
-  typeName: Constant
+  typeName: Constants  # Default: "Secrets"
 ```
 
-### Generated secret name
-You are also able to provide a custom generated name for a secret (otherwise it will do the `camelCase`):
+#### Custom Property Names
 ```yaml
-secrets:
+keys:
 - name: API_KEY
-  generatedName: youtubeApiKey
-- API_SECRET
-outputs:
-- ./Secrets.swift
+  generatedName: youtubeApiKey  # Custom property name in Swift
+- DATABASE_URL  # Will be converted to camelCase: databaseUrl
 ```
 
-There are also things like custom inputs, but for now we only support environment variables.
+#### Multiple Output Files
+
+Generate a single secrets file for multiple targets in your workspace:
+```yaml
+keys:
+- API_KEY
+- SHARED_SECRET
+
+outputs:
+- filePath: ./MainApp/Secrets.swift
+  typeName: Secrets
+- filePath: ./WidgetExtension/Secrets.swift  
+  typeName: Secrets
+- filePath: ./NotificationExtension/Secrets.swift
+  typeName: Secrets
+```
+
+#### Encryption Options
+
+For sensitive data (API keys, secrets):
+```yaml
+keys:
+- API_KEY
+- API_SECRET
+- DATABASE_PASSWORD
+
+outputs:
+- filePath: ./Secrets.swift
+  typeName: Secrets
+  encryption: xor  # Default: obfuscates sensitive data
+```
+
+For non-sensitive configuration values (e.g., from Firebase Remote Config):
+```yaml
+keys:
+- REVIEW_PROMPT_LAUNCHES  # Number of launches before showing app review
+- MAX_CACHE_SIZE_MB
+- FEATURE_FLAG_NEW_ONBOARDING
+- API_TIMEOUT_SECONDS
+
+input:
+  type: firebase
+  configPath: ./GoogleService-Info.plist
+
+outputs:
+- filePath: ./AppConfig.swift
+  typeName: AppConfig
+  encryption: none  # Plain text for non-sensitive configuration values
+```
 
 ## Installing
 You can either build & install it by using my Homebrew tap:
