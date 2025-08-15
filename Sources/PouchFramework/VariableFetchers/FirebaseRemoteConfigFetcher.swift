@@ -53,7 +53,7 @@ public final class FirebaseRemoteConfigFetcher {
 
             return Key(
                 name: declaration.name,
-                value: value,
+                value: value
             )
         }
         await app.delete()
