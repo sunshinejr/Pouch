@@ -1,19 +1,20 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.8
 import PackageDescription
 
 let package = Package(
     name: "Pouch",
-    platforms: [.macOS(.v10_11)],
+    platforms: [.macOS("13")],
     products: [
         .executable(name: "pouch", targets: ["Pouch"]),
         .library(name: "PouchFramework", targets: ["PouchFramework"])
     ],
     dependencies: [
-        .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser", .exact("0.3.2")),
-        .package(name: "Yams", url: "https://github.com/jpsim/Yams", .exact("4.0.4")),
+        .package(url: "https://github.com/apple/swift-argument-parser", exact: "1.5.0"),
+        .package(url: "https://github.com/jpsim/Yams", exact: "4.0.4"),
+        .package(url: "https://github.com/sunshinejr/firebase-ios-sdk", branch: "fork")
     ],
     targets: [
-        .target(
+        .executableTarget(
             name: "Pouch",
             dependencies: [
                 .target(name: "PouchFramework"),
@@ -23,6 +24,7 @@ let package = Package(
         .target(
             name: "PouchFramework",
             dependencies: [
+                .product(name: "FirebaseRemoteConfig", package: "firebase-ios-sdk"),
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]),
         .testTarget(name: "PouchTests", dependencies: ["PouchFramework", "Yams"]),

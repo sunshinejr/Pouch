@@ -1,4 +1,20 @@
-## Next
+# Next
+
+## 0.4.0
+- Added `none` to encryption, which allows for config to also be bundled into the app (default is still `xor`)
+- Added 1password cli option for input
+- Added more configuration to Swift language output (`isStatic`, `accessLevel`, `implementations`, `keyMapping`)
+- Moved encryption per output, not per secret
+- Removed `staticVariables` representation option, added new `variables` and `dictionary`
+- Renamed `secrets` to `keys` in .pouych.yml file
+- Added ability to read all .pouch.yml files from current directory, supporting multiple configurations
+
+## 0.3.0
+- Added `--print-secrets` flag that outputs resolved secrets per environment to standard output
+- Added firebase option for input (where previously it was only environment variables). You can now use Info.plist for Firebase RemoteConfig variable fetcher
+- Added optional `environments`, which derive all options from global settings
+- Added `representation` option to the output (for now you can use dictionary/staticVariables)
+- Updated min macOS version to 13.0.
 
 ## 0.2.0 (2021-04-02)
 - Added `swiftlint:disable all` to the top of the file. [@Igor-Palaguta]

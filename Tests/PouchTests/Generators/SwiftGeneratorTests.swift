@@ -3,13 +3,13 @@ import PouchFramework
 
 final class SwiftGeneratorTests: XCTestCase {
     func test_generatedOutput() throws {
-        let secret = Secret(name: "API_KEYY", generatedName: "apiKey", value: "secret_sauce_monke_boi🐒", encryption: .xor)
-        let config = SwiftConfig(typeName: "Sauce")
-        let contents = SwiftGenerator().generateFileContents(secrets: [secret], config: config)
-        let contentsWithPrints = contents + "\n print(\(config.typeName).\(secret.generatedName!))"
+        let key = Key(name: "API_KEYY", value: "secret_sauce_monke_boi🐒")
+        let config = SwiftConfig(accessLevel: .public, typeName: "Sauce", isStatic: true, implementations: [], encryption: .xor, representation: .variables)
+        let contents = SwiftGenerator().generateFileContents(keys: [key], config: config)
+        let contentsWithPrints = contents + "\n print(\(config.typeName).apiKeyy)"
         let file = try contentsWithPrints.saveToTemporaryDirectory()
         let output = try Process.run(tool: .swift, arguments: [file.path])
         
-        XCTAssertEqual(output, secret.value)
+        XCTAssertEqual(output, key.value)
     }
 }

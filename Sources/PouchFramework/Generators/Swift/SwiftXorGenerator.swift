@@ -1,9 +1,9 @@
 import Foundation
 
 public struct SwiftXorGenerator: SwiftCipherContentsGenerating {
-    public func variableValue(for secret: Secret, config: SwiftConfig) -> String {
+    public func variableValue(for key: Key, config: SwiftConfig) -> String {
         let salt = [UInt8].random(length: 64)
-        let xoredValue = xorEncode(secret: secret.value, salt: salt)
+        let xoredValue = xorEncode(secret: key.value, salt: salt)
         return "\(config.typeName)._xored(\(xoredValue), salt: \(salt))"
     }
     
@@ -35,3 +35,4 @@ public struct SwiftXorGenerator: SwiftCipherContentsGenerating {
         }, encoding: .utf8) ?? ""
     }
 }
+
