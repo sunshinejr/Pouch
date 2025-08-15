@@ -11,11 +11,13 @@ public final class OnePasswordFetcher {
     }
 
     public let vault: String
+    public let account: String?
 
     private var cache: [String: [String: Any]] = [:] // cache for keys, given we have the same vault, we can store
 
-    public init(vault: String) throws {
+    public init(vault: String, account: String? = nil) throws {
         self.vault = vault
+        self.account = account
         logger.log(.variableFetcher, "[1Password] initialized, fetching secrets...")
     }
 
@@ -78,7 +80,11 @@ public final class OnePasswordFetcher {
     private func fetchKeyValueFromOnePassword(key: String, section: String) async throws -> String {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = ["op", "item", "get", key, "--vault", vault, "--format", "json"]
+        var arguments = ["op", "item", "get", key, "--vault", vault, "--format", "json"]
+        if let account = account {
+            arguments += ["--account", account]
+        }
+        process.arguments = arguments
 
         let pipe = Pipe()
         let errorPipe = Pipe()

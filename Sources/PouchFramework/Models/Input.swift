@@ -16,11 +16,12 @@ public enum Input: Codable, Equatable {
         case type
         case configPath
         case vault
+        case account
         case section
         case keyMapping
     }
 
-    case onePassword(_ vault: String, _ section: String, _ keyMapping: [String: String])
+    case onePassword(_ vault: String, _ account: String?, _ section: String, _ keyMapping: [String: String])
     case environmentVariable(_ keyMapping: [String: String])
     case firebaseRemoteConfig(String, _ keyMapping: [String: String])
 
@@ -48,10 +49,11 @@ public enum Input: Codable, Equatable {
                 guard let vault = try container.decodeIfPresent(String.self, forKey: .vault) else {
                     throw Error.vaultRequired
                 }
+                let account = try container.decodeIfPresent(String.self, forKey: .account)
                 guard let section = try container.decodeIfPresent(String.self, forKey: .section) else {
                     throw Error.sectionRequired
                 }
-                self = .onePassword(vault, section, keyMapping ?? [:])
+                self = .onePassword(vault, account, section, keyMapping ?? [:])
             default:
                 throw Error.invalidInputType
             }
@@ -75,8 +77,11 @@ public enum Input: Codable, Equatable {
         case let .firebaseRemoteConfig(configPath, keyMapping):
             try container.encode(configPath, forKey: .configPath)
             try container.encode(keyMapping, forKey: .keyMapping)
-        case let .onePassword(vault, section, keyMapping):
+        case let .onePassword(vault, account, section, keyMapping):
             try container.encode(vault, forKey: .vault)
+            if let account = account {
+                try container.encode(account, forKey: .account)
+            }
             try container.encode(section, forKey: .section)
             try container.encode(keyMapping, forKey: .keyMapping)
         case let .environmentVariable(keyMapping):
