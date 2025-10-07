@@ -25,7 +25,7 @@ public struct SwiftGenerator {
         for key in keys {
             let cipher = cipherGenerator(for: config.encryption)
             let encryptedValue = cipher.variableValue(for: key, config: config)
-            let name = config.keyMapping[key.name] ?? config.representation.generateName(for: key.name)
+            let name = key.generatedName ?? config.keyMapping[key.name] ?? config.representation.generateName(for: key.name)
             let variable = SecretVariable(
                 name: name,
                 type: "String",

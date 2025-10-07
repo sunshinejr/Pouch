@@ -159,4 +159,39 @@ outputs:
             ])
         XCTAssertEqual(parsedConfiguration, expectedConfiguration)
     }
+    
+    func test_keys_withGeneratedName_parsesSuccessfully() throws {
+        let config =
+"""
+keys:
+- name: API_KEY
+  generatedName: youtubeApiKey
+- DATABASE_URL
+
+input:
+  type: env
+
+outputs:
+  - filePath: ./Secrets.swift
+    typeName: Secrets
+"""
+        let parsedConfiguration = try YAMLDecoder().decode(Configuration.self, from: Data(config.utf8))
+        let expectedConfiguration = Configuration(
+            keys: [.init(name: "API_KEY", generatedName: "youtubeApiKey"), .init(name: "DATABASE_URL")],
+            input: .environmentVariable([:]),
+            outputs: [
+                .init(
+                    file: .init(filePath: "./Secrets.swift"),
+                    outputLanguage: .swift(.init(
+                        accessLevel: Defaults.Swift.accessLevel,
+                        typeName: "Secrets",
+                        isStatic: true,
+                        implementations: Defaults.Swift.implementations,
+                        encryption: Defaults.Swift.encryption,
+                        representation: Defaults.Swift.representation
+                    ))
+                )
+            ])
+        XCTAssertEqual(parsedConfiguration, expectedConfiguration)
+    }
 }
