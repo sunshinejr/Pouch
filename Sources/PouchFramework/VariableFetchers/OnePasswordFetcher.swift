@@ -35,7 +35,7 @@ public final class OnePasswordFetcher {
             do {
                 let value = try await fetchKeyValueFromOnePassword(key: mappedKey, section: section)
                 logger.log(.variableFetcher, "[1Password] Fetched value for key: \(mappedKey, color: .green)")
-                fetchedKeys.append(Key(name: declaration.name, value: value))
+                fetchedKeys.append(Key(name: declaration.name, value: value, generatedName: declaration.generatedName))
             } catch let error as Error {
                 missingKeys.append(declaration.name)
                 switch error {
