@@ -5,7 +5,7 @@ Heavily inspired by [CocoaPods-Keys](https://github.com/orta/cocoapods-keys) & [
 
 ## Features
 
-- 🔐 **Multiple Input Sources**: Environment variables, 1Password, Firebase Remote Config (experimental)
+- 🔐 **Multiple Input Sources**: Environment variables, `.env` files, 1Password, Firebase Remote Config (experimental)
 - 🎯 **Environment-based Configuration**: Different keys for development, staging, and production
 - 🔒 **Obfuscation**: XOR cipher with random salt generation
 - 🚀 **Swift Code Generation**: Type-safe access to your keys
@@ -96,6 +96,36 @@ input:
   type: env
   keyMapping:
     API_KEY: MY_CUSTOM_ENV_VAR  # Optional: map to different env var names
+```
+
+#### .env Files
+```yaml
+input:
+  type: dotenv
+  filePath: ./.env  # Optional: defaults to .env
+  keyMapping:
+    API_KEY: MY_CUSTOM_KEY  # Optional: map to different key names
+```
+
+**Features:**
+- Variable interpolation: `DATABASE_URL=${DB_HOST}:${DB_PORT}`
+- Multi-line values using heredoc syntax (`"""` or `'''`)
+- Comments (lines starting with `#`)
+- Quoted values (single or double quotes)
+
+**Example `.env` file:**
+```env
+# Database configuration
+DB_HOST=localhost
+DB_PORT=5432
+DB_CONNECTION=${DB_HOST}:${DB_PORT}
+
+# Multi-line private key
+PRIVATE_KEY="""
+-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEAw...
+-----END RSA PRIVATE KEY-----
+"""
 ```
 
 #### 1Password

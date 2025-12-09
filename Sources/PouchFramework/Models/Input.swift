@@ -10,11 +10,13 @@ public enum Input: Codable, Equatable {
         public static let firebaseRemoteConfig = "firebase"
         public static let environmentVariable = "env"
         public static let onePassword = "1password"
+        public static let dotenv = "dotenv"
     }
 
     public enum CodingKeys: String, CodingKey {
         case type
         case configPath
+        case filePath
         case vault
         case account
         case section
@@ -24,12 +26,14 @@ public enum Input: Codable, Equatable {
     case onePassword(_ vault: String, _ account: String?, _ section: String, _ keyMapping: [String: String])
     case environmentVariable(_ keyMapping: [String: String])
     case firebaseRemoteConfig(String, _ keyMapping: [String: String])
+    case dotenv(_ filePath: String, _ keyMapping: [String: String])
 
     public var typeDescription: String {
         switch self {
         case .onePassword: Constants.onePassword
         case .environmentVariable: Constants.environmentVariable
         case .firebaseRemoteConfig: Constants.firebaseRemoteConfig
+        case .dotenv: Constants.dotenv
         }
     }
 
@@ -54,6 +58,9 @@ public enum Input: Codable, Equatable {
                     throw Error.sectionRequired
                 }
                 self = .onePassword(vault, account, section, keyMapping ?? [:])
+            case Constants.dotenv:
+                let filePath = try container.decodeIfPresent(String.self, forKey: .filePath) ?? ".env"
+                self = .dotenv(filePath, keyMapping ?? [:])
             default:
                 throw Error.invalidInputType
             }
@@ -85,6 +92,9 @@ public enum Input: Codable, Equatable {
             try container.encode(section, forKey: .section)
             try container.encode(keyMapping, forKey: .keyMapping)
         case let .environmentVariable(keyMapping):
+            try container.encode(keyMapping, forKey: .keyMapping)
+        case let .dotenv(filePath, keyMapping):
+            try container.encode(filePath, forKey: .filePath)
             try container.encode(keyMapping, forKey: .keyMapping)
         }
     }
