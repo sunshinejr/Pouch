@@ -51,6 +51,8 @@ public final class Engine {
             }
             self.onePasswordFetcher = fetcher
             return try await fetcher.fetch(declarations: declarations, section: section, keyMapping: keyMapping)
+        case let .dotenv(filePath, keyMapping):
+            return try await DotEnvFetcher(filePath: filePath).fetch(declarations: declarations, keyMapping: keyMapping)
         }
     }
 
